@@ -6,5 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'my-store';
+  imgParent: string = '';
+  showImg: boolean = true;
+
+  onLoaded(img: string): void {
+    console.log("Data: " + img);
+  }
+
+  toggleImg() {
+    this.showImg = !this.showImg;
+  }
 }
