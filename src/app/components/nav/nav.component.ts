@@ -8,6 +8,7 @@ import { Nav } from 'src/app/models/nav.dto';
 })
 export class NavComponent implements OnInit {
 
+  activeMenu = false;
   navsList: Nav[] = [
     { url: '', text: 'All' },
     { url: '', text: 'Clothes' },
@@ -17,6 +18,10 @@ export class NavComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  toggleMenu() {
+    this.activeMenu = !this.activeMenu;
   }
 
 }

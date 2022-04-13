@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+@import url(./styles/reset.scss);
+
+* {
+  font-family: 'Quicksand', sans-serif;
+}
+
 .products--grid {
   app-img{
     img {
