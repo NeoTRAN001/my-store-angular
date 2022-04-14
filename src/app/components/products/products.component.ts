@@ -12,8 +12,10 @@ import { ProductsService } from '../../services/products.service';
 export class ProductsComponent implements OnInit {
 
   myShoppingCart: Product[] = [];
-  total: number = 0;
   products: Product[] = [];
+  date: Date = new Date(2021, 1, 32);
+  today: Date = new Date();
+  total: number = 0;
 
   constructor(
     private storeService: StoreService,
