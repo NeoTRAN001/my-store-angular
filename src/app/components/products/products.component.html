@@ -8,10 +8,13 @@
   Today: {{ today | date:'short' }}
 </p>
 <p>
+  Today: {{ today | timeAgo }}
+</p>
+<p>
   Other Date: {{ date | date:'yyyy/dd/MM' }}
 </p>
 <p>
-  {{ 'hOLa' | uppercase }}
+  {{ 'hOLa' | stringAsciiValue }}
 </p>
 <div class="products--grid">
   <app-product
