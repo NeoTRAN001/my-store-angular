@@ -12,6 +12,7 @@ import { NavComponent } from './components/nav/nav.component';
 import { ReversePipe } from './pipes/reverse.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { StringAsciiValuePipe } from './pipes/string-ascii-value.pipe';
+import { HighlightDirective } from './directives/highlight.directive';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { StringAsciiValuePipe } from './pipes/string-ascii-value.pipe';
     NavComponent,
     ReversePipe,
     TimeAgoPipe,
-    StringAsciiValuePipe
+    StringAsciiValuePipe,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,
