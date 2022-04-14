@@ -8,7 +8,7 @@ import { Product } from '../../models/product.dto';
 })
 export class ProductComponent implements OnInit {
 
-  @Input() product: Product = { id: '', name: '', image: '', price: 0 };
+  @Input() product: Product = { id: '', title: '', image: '', price: 0, description: '', category: '' };
   @Output() addedProduct: EventEmitter<Product> = new EventEmitter<Product>();
 
   constructor() { }
