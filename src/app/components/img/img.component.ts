@@ -17,13 +17,13 @@ export class ImgComponent implements OnChanges {
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('img') set changeImg(newImg: String) {
     this.img = newImg.toString();
-    console.log('Custom Change img');
+    // console.log('Custom Change img');
   }
 
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("Changes: ", changes);
+    //console.log("Changes: ", changes);
   }
 
   imgError(): void {

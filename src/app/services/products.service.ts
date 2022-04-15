@@ -8,11 +8,17 @@ import { Product } from '../models/product.dto';
 })
 export class ProductsService {
 
+  private apiUrl: string = 'http://young-sands-07814.herokuapp.com/api/products';
+
   constructor(
     private http: HttpClient
   ) { }
 
   getAllProducts() : Observable<Product[]> {
-    return this.http.get<Product[]>('http://fakestoreapi.com/products');
+    return this.http.get<Product[]>(this.apiUrl);
+  }
+
+  getProduct(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 }
