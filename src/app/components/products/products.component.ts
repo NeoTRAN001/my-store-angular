@@ -16,6 +16,8 @@ export class ProductsComponent implements OnInit {
   productChosen: Product = { id: '', category: { id: '', name: '', typeImg: '' }, description: '', images: [], price: 0, title: '' };
   total: number = 0;
   showProductDetail: boolean = false;
+  limit: number = 10;
+  offset: number = 0;
 
   constructor(
     private storeService: StoreService,
@@ -25,10 +27,7 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productsService.getAllProducts()
-      .subscribe(data => {
-        this.products = data.filter(product => product.images.length > 0);
-      });
+    this.loadMore();
   }
 
   onAddToShoppingCart(product: Product): void {
@@ -84,6 +83,14 @@ export class ProductsComponent implements OnInit {
         const productIndex: number = this.products.findIndex(item => item.id === this.productChosen.id);
         this.products.splice(productIndex, 1);
         this.toggleProductDetail();
+      });
+  }
+
+  loadMore() {
+    this.productsService.getProductsByPage(this.limit, this.offset)
+      .subscribe(data => {
+        this.products = this.products.concat(data.filter(product => product.images.length > 0));
+        this.offset += this.limit;
       });
   }
 }
