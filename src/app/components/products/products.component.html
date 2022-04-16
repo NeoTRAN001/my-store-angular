@@ -1,3 +1,4 @@
+<button (click)="createNewProduct()">Created</button>
 <div class="products--grid">
   <app-product
     [product]="product"
@@ -20,5 +21,7 @@
     </swiper>
 
     <p>{{ productChosen.description }}</p>
+    <button (click)="updateProduct()">Editar</button>
+    <button (click)="deleteProduct()">Eliminar</button>
   </div>
 </div>
