@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, retry } from 'rxjs';
+import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { catchError, Observable, retry, throwError } from 'rxjs';
 import { Product, CreateProductDTO, UpdateProductDTO } from '../models/product.dto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
-
-  private apiUrl: string = 'http://young-sands-07814.herokuapp.com/api/products';
-  // private apiUrl: string = '/api/products'; // Ahora el archivo proxy.config.json se hace cargo de la URL
+  private apiUrl: string = `${environment.API_URL}/api/products`; // proxy.config.json solución CORS
 
   constructor(
     private http: HttpClient
@@ -34,7 +33,24 @@ export class ProductsService {
   }
 
   getProduct(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.http.get<Product>(`${this.apiUrl}/${id}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+
+          switch(error.status) {
+            case HttpStatusCode.InternalServerError:
+              return throwError(() => new Error('Ups algo ha salido mal en el servidor'));
+
+            case HttpStatusCode.Unauthorized:
+              return throwError(() => new Error('Ups no tienes permisos para esto'));
+
+            case HttpStatusCode.NotFound:
+                return throwError(() => new Error('Ups al parecer el producto no existe'));
+
+            default: return throwError(() => new Error('Ups algo ha salido mal'));
+          }
+        })
+      );
   }
 
   create(dto: CreateProductDTO): Observable<Product> {
