@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { catchError, Observable, retry, throwError } from 'rxjs';
+import { catchError, Observable, retry, throwError, map } from 'rxjs';
 import { Product, CreateProductDTO, UpdateProductDTO } from '../models/product.dto';
 import { environment } from '../../environments/environment';
 
@@ -14,21 +14,29 @@ export class ProductsService {
     private http: HttpClient
   ) { }
 
-  getAllProducts(limit?: number, offset?: number) : Observable<Product[]> {
+  getAllProducts(limit?: number, offset?: number): Observable<Product[]> {
     let params: HttpParams = new HttpParams();
 
-    if(limit && offset) {
+    if (limit != undefined && offset != undefined) {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
 
     return this.http.get<Product[]>(this.apiUrl, { params })
-      .pipe(retry(3));
+      .pipe(
+        retry(3),
+        map(products => products.map(item => {
+          return {
+            ...item,
+            taxes: .19 * item.price
+          }
+        }))
+      );
   }
 
   getProductsByPage(limit: number, offset: number): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl, {
-      params: { limit, offset}
+      params: { limit, offset }
     }).pipe(retry(3));
   }
 
@@ -37,7 +45,7 @@ export class ProductsService {
       .pipe(
         catchError((error: HttpErrorResponse) => {
 
-          switch(error.status) {
+          switch (error.status) {
             case HttpStatusCode.InternalServerError:
               return throwError(() => new Error('Ups algo ha salido mal en el servidor'));
 
@@ -45,7 +53,7 @@ export class ProductsService {
               return throwError(() => new Error('Ups no tienes permisos para esto'));
 
             case HttpStatusCode.NotFound:
-                return throwError(() => new Error('Ups al parecer el producto no existe'));
+              return throwError(() => new Error('Ups al parecer el producto no existe'));
 
             default: return throwError(() => new Error('Ups algo ha salido mal'));
           }
@@ -61,7 +69,7 @@ export class ProductsService {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, dto);
   }
 
-  delete(id: string): Observable<boolean>  {
+  delete(id: string): Observable<boolean> {
     return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
   }
 }

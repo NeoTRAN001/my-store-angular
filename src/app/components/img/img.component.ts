@@ -23,7 +23,7 @@ export class ImgComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    //console.log("Changes: ", changes);
+    console.log("Changes: ", changes);
   }
 
   imgError(): void {
