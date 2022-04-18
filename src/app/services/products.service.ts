@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { catchError, Observable, retry, throwError, map } from 'rxjs';
+import { catchError, Observable, retry, throwError, map, zip } from 'rxjs';
 import { Product, CreateProductDTO, UpdateProductDTO } from '../models/product.dto';
 import { environment } from '../../environments/environment';
 
@@ -71,5 +71,12 @@ export class ProductsService {
 
   delete(id: string): Observable<boolean> {
     return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
+  }
+
+  fetchReadAndUpdate(id: string, dto: UpdateProductDTO): Observable<[Product, Product]> {
+    return zip( // Ejecutar dos observadores sin que dependan entre ellos
+      this.getProduct(id),
+      this.update(id, dto)
+    );
   }
 }

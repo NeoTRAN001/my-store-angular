@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { switchMap } from 'rxjs/operators';
 import { Product, CreateProductDTO, UpdateProductDTO } from '../../models/product.dto';
 
 import { StoreService } from '../../services/store.service';
@@ -55,6 +56,22 @@ export class ProductsComponent implements OnInit {
         },
         complete: () => this.statusDetail = 'complete'
       });
+  }
+
+  readAndUpdate(id: string): void {
+    this.productsService.getProduct(id)
+   .pipe( // EJecutar dos observadores cuando uno depende del anterior
+      switchMap((product) => this.productsService.update(product.id, {title: 'change'}))
+    )
+    .subscribe(data => {
+      console.log(data);
+    });
+
+    this.productsService.fetchReadAndUpdate(id, {title: 'Change Title'})
+    .subscribe(response => { // Ejecutar dos observadores sin que dependan entre ellos
+      const read = response[0];
+      const update = response[1];
+    })
   }
 
   createNewProduct(): void {
