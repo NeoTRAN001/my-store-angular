@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { StoreService } from '../../services/store.service';
 import { Nav } from 'src/app/models/nav.dto';
+import { User } from '../../models/user.dto';
+import { AuthService } from '../../services/auth.service';
+import { UsersService } from '../../services/users.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-nav',
@@ -9,8 +13,12 @@ import { Nav } from 'src/app/models/nav.dto';
 })
 export class NavComponent implements OnInit {
 
+  @Input() account: string = '';
+
   activeMenu = false;
   counter: number = 0;
+  token: string = '';
+  profile: User | null = null;
   navsList: Nav[] = [
     { url: '', text: 'All' },
     { url: '', text: 'Clothes' },
@@ -18,7 +26,9 @@ export class NavComponent implements OnInit {
   ];
 
   constructor(
-    private storeService: StoreService
+    private storeService: StoreService,
+    private authService: AuthService,
+    private userService: UsersService
   ) { }
 
   ngOnInit(): void {
@@ -31,4 +41,33 @@ export class NavComponent implements OnInit {
     this.activeMenu = !this.activeMenu;
   }
 
+  loginAndGetProfile(): void {
+    this.authService.login('email@gmail.com', '123456')
+      .pipe(
+        switchMap((token) => {
+          this.token = token.access_token;
+          return this.authService.profile(this.token);
+        })
+      )
+      .subscribe(profile => {
+        this.profile = profile;
+      })
+  }
+
+  login(): void {
+    this.authService.login('email@gmail.com', '123456')
+    .subscribe(rta => {
+      console.log(rta.access_token);
+      this.token = rta.access_token;
+      this.getProfile();
+    });
+  }
+
+  getProfile(): void {
+    this.authService.profile(this.token)
+    .subscribe(profile => {
+      console.log(profile);
+      this.profile = profile;
+    });
+  }
 }
