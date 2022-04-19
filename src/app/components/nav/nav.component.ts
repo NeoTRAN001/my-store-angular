@@ -17,7 +17,6 @@ export class NavComponent implements OnInit {
 
   activeMenu = false;
   counter: number = 0;
-  token: string = '';
   profile: User | null = null;
   navsList: Nav[] = [
     { url: '', text: 'All' },
@@ -44,10 +43,7 @@ export class NavComponent implements OnInit {
   loginAndGetProfile(): void {
     this.authService.login('email@gmail.com', '123456')
       .pipe(
-        switchMap((token) => {
-          this.token = token.access_token;
-          return this.authService.profile(this.token);
-        })
+        switchMap(() => this.authService.getProfile())
       )
       .subscribe(profile => {
         this.profile = profile;
@@ -55,19 +51,9 @@ export class NavComponent implements OnInit {
   }
 
   login(): void {
-    this.authService.login('email@gmail.com', '123456')
-    .subscribe(rta => {
-      console.log(rta.access_token);
-      this.token = rta.access_token;
-      this.getProfile();
-    });
-  }
-
-  getProfile(): void {
-    this.authService.profile(this.token)
-    .subscribe(profile => {
-      console.log(profile);
-      this.profile = profile;
+    this.authService.loginAndGet('email@gmail.com', '123456')
+    .subscribe(user => {
+      this.profile = user;
     });
   }
 }
