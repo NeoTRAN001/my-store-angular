@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UsersService } from './services/users.service';
+import { FilesService } from './services/files.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ export class AppComponent {
   token: string = '';
 
   constructor(
-    private userService: UsersService
+    private userService: UsersService,
+    private fileService: FilesService
   ){}
 
   onLoaded(img: string): void {
@@ -31,5 +33,10 @@ export class AppComponent {
     }).subscribe(rta => {
       console.log(rta);
     });
+  }
+
+  downloadPdf(): void {
+    this.fileService.getFile('my.pdf', 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf', 'application/pdf')
+    .subscribe()
   }
 }
